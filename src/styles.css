@@ -6,12 +6,10 @@
 }
 
 body {
-    /* background-color: rgb(241, 228, 154); */
+    background-color: rgb(144, 144, 142);
     font-family: "Source Sans Pro", sans-serif;
     color: white;
     font-weight: 300;
-    background: #50a3a2;
-    background-image: radial-gradient( circle, #50a3a2, #439696, #358a8a, #267e7e, #137272);
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -28,9 +26,9 @@ body {
     border-top: 30px solid rgb(24, 23, 23);
     align-items: center;
     padding: 80px 20px;
-    width: fit-content;
+    width: 25vw;
     border-radius: 20px;
-    background: #50a3a2;
+    background: black;
     box-shadow: 4px 5px black;
     transform: rotate(0deg);
 }
@@ -69,6 +67,11 @@ input {
     font-weight: 300;
     margin: 0 auto 10px auto;
     width: max-content;
+}
+
+/* Add a margin to all the child element of input-box class  */
+.input-box>* {
+    margin: 15px 0;
 }
 
 .input-box {

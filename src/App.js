@@ -1,97 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
+import initialData from "./data";
 import "./styles.css";
 
-export default function App() {
-  const [persons, setPersons] = useState([
-    
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 }
-  ]);
 
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [searchWord, setSearchWord] = useState("");
+const App = () => {
+  const [persons, setPersons] = useState(initialData)
+  const [search, setSearch] = useState('')
+  const [filteredPersons, setFilteredPersons] = useState([])
 
-  const [showAll, setShowAll] = useState(true);
+  useEffect(() => {
+    if (search === '') {
+      setFilteredPersons(persons)
+    }
+    const filtered = persons.filter((p) =>
+      p.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredPersons(filtered);
+  }, [search, persons]);
 
-  const handleInput = (event) => {
-    setNewName(event.target.value);
-  };
 
-  const handleInputNo = (event) => {
-    setNewNumber(event.target.value);
-  };
+  /** 
+   *  @param {Event} e - The click event triggered by the 'add' button. 
+   *  @param {string} name - The name of the new person to be added.
+   *  @param {string} number - The phone number fo the new person to be added.
+  */
+  const handleClick = (e, name, number) => {
+    e.preventDefault()
+    const updatedPerson = {
+      name: name,
+      number: number
+    }
 
-  const addPhoneNo = (event) => {
-    event.preventDefault();
-    const phoneNo = {
-      name: newName,
-      number: newNumber
-    };
+    if (persons.some(person => person.name === name)) {
+      alert(`${name} is already added to the phonebook`)
+      return;
+    }
 
-    const isIncluded = persons.some((pers) => {
-      if (pers.name === phoneNo.name) {
-        return true;
-      }
-      return false;
-    });
+    setPersons((prev) => [...prev, updatedPerson])
+  }
 
-    isIncluded
-      ? alert(`${newName} is already added to phonebook`)
-      : setPersons(persons.concat(phoneNo));
-
-    // setnotes((prevNotes) => {
-    //   return [...prevNotes, note];
-    // });
-
-    setNewName("");
-    setNewNumber("");
-  };
-
-  const handleSearch = (event) => {
-    setSearchWord(event.target.value);
-    setShowAll(!showAll);
-  };
-
-  const personsToShow = showAll
-    ? persons
-    : persons.filter((showper) => showper.name === searchWord);
+  const handleSearch = (e) => {
+    setSearch(e.target.value)
+  }
 
   return (
     <div className="App">
-      <h1>Phonebook</h1>
-
-      <input
-        onChange={handleSearch}
-        value={searchWord}
-        placeholder="Search..."
-      />
-
-      <form>
-        <div className="input-box">
-          <input onChange={handleInput} value={newName} placeholder="Name" />
-          <input
-            onChange={handleInputNo}
-            value={newNumber}
-            placeholder="Phone Number"
-          />
-          <button onClick={addPhoneNo} type="submit">
-            Add
-          </button>
-        </div>
-      </form>
-
-      <h2> Numbers </h2>
-      <div className="phonebook">
-        {personsToShow.map((naam) => (
-          <li>
-            {naam.name} <span className="phoneNo"> {naam.number} </span>
-          </li>
-        ))}
-      </div>
-      {/* <div>debug: {newName}</div> */}
+      <h1>PhoneBook</h1>
+      <PersonForm handleClick={handleClick} />
+      <Filter handleSearch={handleSearch} />
+      <h2>Numbers</h2>
+      <Persons filteredPersons={filteredPersons} />
     </div>
-  );
+  )
 }
+
+export default App
